@@ -1,0 +1,26 @@
+{
+  "rules": {
+    "no-hard-waits": "error",
+    "no-logic-in-tests": "error",
+    "no-focused-tests": "error",
+    "no-hardcoded-credentials": "error",
+    "no-flaky-selectors": "warn",
+    "single-assertion-focus": "warn",
+    "test-isolation-check": "info"
+  },
+  "include": [
+    "**/*.spec.{ts,js}",
+    "**/*.test.{ts,js}",
+    "**/*.cy.{ts,js}"
+  ],
+  "exclude": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/.next/**"
+  ],
+  "maxAssertionsPerTest": 5,
+  "reportFormat": "cli",
+  "outputDir": "./assert-guard-reports",
+  "failOnWarnings": false
+}

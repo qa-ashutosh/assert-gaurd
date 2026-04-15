@@ -1,0 +1,8 @@
+node_modules/
+dist/
+coverage/
+assert-guard-reports/
+*.tsbuildinfo
+.DS_Store
+.env
+.env.local
