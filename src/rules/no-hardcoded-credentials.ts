@@ -15,7 +15,7 @@ const PREFIXED_KEY = /^(sk|pk|rk|api|token|secret|bearer)[_-](live|test|prod|dev
 function looksLikeCredential(value: string): boolean {
   if (value.length < 6) return false;
   if (value.includes('process.env')) return false;
-  if (value.includes('\${')) return false;
+  if (value.includes('${')) return false;
   // Prefixed key patterns like sk-live-xxx, pk-prod-xxx always flagged
   if (PREFIXED_KEY.test(value)) return true;
   // Generic noise filter

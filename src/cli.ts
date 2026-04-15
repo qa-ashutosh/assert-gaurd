@@ -103,6 +103,7 @@ program
   .command('rules')
   .description('List all available built-in rules')
   .action(() => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { BUILT_IN_RULES, DEFAULT_CONFIG } = require('./rules');
     console.log();
     console.log(chalk.hex('#AFA9EC').bold('  Built-in rules\n'));
