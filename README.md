@@ -2,16 +2,14 @@
 
 <br />
 
-```
-  ▲  assert-guard
-```
+<h1>▲ assert-guard</h1>
 
-<br />
+<p><strong>The test quality gate your CI pipeline is missing.</strong></p>
 
-**The test quality gate your CI pipeline is missing.**
-
+<p>
 Lint your test suite for anti-patterns, flaky selectors, hard waits,<br/>
 and architectural violations — before they silently break your pipeline.
+</p>
 
 <br />
 
@@ -23,9 +21,7 @@ and architectural violations — before they silently break your pipeline.
 
 <br />
 
-```bash
-npx @ashforge/assert-guard --dir ./tests
-```
+<p><code>npx @ashforge/assert-guard --dir ./tests</code></p>
 
 <br />
 
@@ -34,9 +30,7 @@ npx @ashforge/assert-guard --dir ./tests
 ---
 
 <div align="center">
-
-### Your CI checks if tests _pass_. &nbsp;assert-guard checks if tests are _well written_.
-
+<h3>Your CI checks if tests <em>pass</em>. &nbsp;assert-guard checks if tests are <em>well written</em>.</h3>
 </div>
 
 ---
@@ -66,10 +60,10 @@ assert-guard catches it at the gate.
 ## How It Works
 
 ```
-  Your test files  →   AST parser     →   Rule engine   →   Report   →   Exit code
-  *.spec.ts            @babel/parser      7 built-in        CLI          0 / 1
-  *.test.js            no test            rules             JSON         for CI
-  *.cy.ts              runner needed      pluggable         HTML
+  Your test files   →   AST parser     →   Rule engine   →   Report   →   Exit code
+  *.spec.ts             @babel/parser      7 built-in        CLI          0 / 1
+  *.test.js             no test            rules             JSON         for CI
+  *.cy.ts               runner needed      pluggable         HTML
 ```
 
 assert-guard parses your test files as an Abstract Syntax Tree — the same technique ESLint uses. No test runner required. No Cypress. No Playwright. Just your files and a set of rules that encode what a senior QA architect would flag in a code review.
@@ -279,7 +273,7 @@ Config is auto-discovered in this order: `ag.config.json` → `.assert-guard.jso
 
 <br />
 
-Flags `cy.wait(N)`, `page.waitForTimeout()`, `Thread.sleep()` and similar hardcoded pause calls. These create timing dependencies that pass on fast machines and fail on slow ones.
+Flags `cy.wait(N)`, `page.waitForTimeout()`, `Thread.sleep()` and similar hardcoded pause calls.
 
 ```typescript
 // ✗ Flagged as error
@@ -299,7 +293,7 @@ await expect(locator).toBeVisible()  // Playwright assertion with built-in retry
 
 <br />
 
-Catches `.only()` and focused test aliases that silently skip your entire suite in CI while keeping the pipeline green.
+Catches `.only()` and focused test aliases that silently skip your entire suite in CI.
 
 ```typescript
 // ✗ Flagged as error — all other tests silently skipped in CI
@@ -321,17 +315,15 @@ it('my test', () => { ... })
 
 <br />
 
-Detects `if/else`, `for` loops, and `try/catch` inside test blocks. Conditional logic in tests makes failures non-deterministic and impossible to diagnose reliably.
+Detects `if/else`, `for` loops, and `try/catch` inside test blocks.
 
 ```typescript
 // ✗ Flagged as error
 it('submits the form', () => {
-  if (isLoggedIn) {           // ← non-deterministic branch
-    cy.get('#submit').click()
-  }
+  if (isLoggedIn) { cy.get('#submit').click() }
 })
 
-// ✔ Correct — linear, readable, always the same execution path
+// ✔ Correct
 it('submits form when authenticated', () => {
   loginAs('user@example.com')
   cy.get('[data-testid="submit-btn"]').click()
@@ -344,7 +336,7 @@ it('submits form when authenticated', () => {
 
 <br />
 
-Detects hardcoded passwords, API keys, and tokens in test files. Prefixed key patterns (`sk-live-`, `pk-prod-`) are always flagged regardless of property name.
+Detects hardcoded passwords, API keys, and tokens in test files.
 
 ```typescript
 // ✗ Flagged as error
@@ -362,17 +354,16 @@ cy.login({ apiKey: Cypress.env('API_KEY') })
 
 <br />
 
-Flags positional CSS, absolute XPath, and auto-generated class names that break whenever the DOM or build output changes.
+Flags positional CSS, absolute XPath, and auto-generated class names.
 
 ```typescript
 // ✗ Flagged as warning
-cy.get('li:nth-child(2)')         // breaks when list order changes
-cy.get('//div/span[1]')           // XPath index — position-dependent
-cy.get('.css-1a2b3c')             // generated class — changes on rebuild
+cy.get('li:nth-child(2)')
+cy.get('//div/span[1]')
+cy.get('.css-1a2b3c')
 
 // ✔ Correct
 cy.get('[data-testid="cart-item-first"]')
-cy.get('[aria-label="Remove item"]')
 page.getByRole('button', { name: 'Checkout' })
 ```
 </details>
@@ -382,10 +373,10 @@ page.getByRole('button', { name: 'Checkout' })
 
 <br />
 
-Warns when a test block exceeds the configured assertion limit. Tests with too many assertions usually mean the test is verifying too much at once, making failure messages harder to interpret.
+Warns when a test block exceeds the configured assertion limit (default: 5).
 
 ```typescript
-// ✗ Flagged (6 assertions, default limit 5)
+// ✗ Flagged — 6 assertions, limit 5
 it('validates the whole page', () => {
   expect(title).toBe('Dashboard')
   expect(subtitle).toContain('Welcome')
@@ -409,18 +400,17 @@ Adjust the threshold: `"maxAssertionsPerTest": 8` in `ag.config.json`
 
 <br />
 
-Detects `let` variables declared at `describe` scope that may carry state between tests.
+Detects `let` variables at `describe` scope that may carry state between tests.
 
 ```typescript
-// ✗ Flagged — userData may persist across tests
+// ✗ Flagged
 describe('user suite', () => {
-  let userData           // ← shared mutable state
-
-  it('test A', () => { userData = { name: 'Alice' } })
-  it('test B', () => { expect(userData.name).toBe('') }) // depends on test A
+  let userData
+  it('A', () => { userData = { name: 'Alice' } })
+  it('B', () => { expect(userData.name).toBe('') }) // depends on A
 })
 
-// ✔ Correct — reset before every test
+// ✔ Correct
 describe('user suite', () => {
   let userData
   beforeEach(() => { userData = { name: '' } })
@@ -435,10 +425,10 @@ describe('user suite', () => {
 ## Report Formats
 
 ### CLI (default)
-Coloured terminal output designed to be scannable in GitHub Actions logs. Every violation includes a precise fix hint inline — no documentation lookup required.
+Coloured terminal output designed to be scannable in GitHub Actions logs. Every violation includes a precise fix hint inline.
 
 ### HTML
-A self-contained single `.html` file. No CDN. No external dependencies. Open it offline in any browser.
+A self-contained single `.html` file. No CDN. No external dependencies. Opens offline in any browser.
 
 ```bash
 assert-guard --dir ./tests --format html
@@ -455,23 +445,13 @@ assert-guard --dir ./tests --format json
 ```json
 {
   "version": "1.0.0",
-  "timestamp": "2026-04-15T09:41:00.000Z",
-  "summary": {
-    "files": 42,
-    "rulesApplied": 7,
-    "passed": 38,
-    "errors": 2,
-    "warnings": 4,
-    "gateStatus": "failed"
-  },
+  "summary": { "files": 42, "errors": 2, "warnings": 4, "gateStatus": "failed" },
   "violations": [
     {
       "rule": "no-hard-waits",
       "severity": "error",
-      "message": "cy.wait(3000) detected — hard waits cause flaky tests",
       "file": "/tests/checkout.spec.ts",
       "line": 24,
-      "column": 4,
       "hint": "Replace with waitFor() or an intercept alias"
     }
   ]
@@ -484,8 +464,6 @@ assert-guard --dir ./tests --format json
 
 ## CI/CD Integration
 
-### GitHub Actions
-
 ```yaml
 - name: Test quality gate
   run: npx @ashforge/assert-guard --dir ./tests
@@ -493,7 +471,7 @@ assert-guard --dir ./tests --format json
 
 assert-guard exits `1` on errors — every CI system treats non-zero exit codes as a build failure automatically.
 
-**Full workflow with HTML report artifact:**
+**Full workflow with report artifact:**
 
 ```yaml
 jobs:
@@ -504,10 +482,8 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '20.x' }
       - run: npm ci
-      - name: Run assert-guard
-        run: npx @ashforge/assert-guard --dir ./tests --format all --output ./reports
-      - name: Upload report
-        uses: actions/upload-artifact@v4
+      - run: npx @ashforge/assert-guard --dir ./tests --format all --output ./reports
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: assert-guard-report
@@ -523,19 +499,11 @@ jobs:
 assert-guard ships full TypeScript declarations and works as a library:
 
 ```typescript
-import {
-  loadConfig,
-  resolveFiles,
-  runScan,
-  writeHtmlReport,
-} from '@ashforge/assert-guard';
+import { loadConfig, resolveFiles, runScan, writeHtmlReport } from '@ashforge/assert-guard';
 
 const config = loadConfig('./ag.config.json');
 const files  = await resolveFiles('./tests', config);
 const result = runScan(files, config);
-
-console.log(`Gate: ${result.gateStatus}`);   // "passed" | "failed"
-console.log(`Errors: ${result.errors}`);
 
 if (result.gateStatus === 'failed') {
   writeHtmlReport(result, './reports');
@@ -543,13 +511,13 @@ if (result.gateStatus === 'failed') {
 }
 ```
 
-| Function | Signature | Description |
-|----------|-----------|-------------|
-| `loadConfig` | `(path?: string) => AssertGuardConfig` | Loads config or falls back to defaults |
-| `resolveFiles` | `(dir, config) => Promise<string[]>` | Resolves test files from globs |
-| `runScan` | `(files, config) => ScanResult` | Runs all active rules. Synchronous. |
-| `writeHtmlReport` | `(result, outputDir) => string` | Writes HTML report, returns path |
-| `writeJsonReport` | `(result, outputDir) => string` | Writes JSON results, returns path |
+| Function | Description |
+|----------|-------------|
+| `loadConfig(path?)` | Loads config file or falls back to defaults |
+| `resolveFiles(dir, config)` | Resolves test files matching include/exclude globs |
+| `runScan(files, config)` | Runs all active rules. Synchronous. |
+| `writeHtmlReport(result, dir)` | Writes self-contained HTML report, returns path |
+| `writeJsonReport(result, dir)` | Writes JSON results file, returns path |
 
 <br />
 
@@ -557,7 +525,7 @@ if (result.gateStatus === 'failed') {
 
 ## Framework Support
 
-assert-guard is **framework-agnostic** — no test runner installation required.
+Framework-agnostic — no test runner installation required.
 
 | Framework | Detected patterns |
 |-----------|-------------------|
@@ -568,24 +536,20 @@ assert-guard is **framework-agnostic** — no test runner installation required.
 | **WebdriverIO** | `browser.pause()` · XPath selectors |
 | **Vitest** | same patterns as Jest |
 
-Default extensions scanned: `.spec.ts` · `.spec.js` · `.test.ts` · `.test.js` · `.cy.ts` · `.cy.js`
-
 <br />
 
 ---
 
 ## Roadmap
 
-The free tier will always include all current built-in rules. Planned additions:
-
 - `page-object-enforced` — flag raw locator calls outside POM classes
 - `no-sleep-in-hooks` — catch hard waits inside `beforeEach` / `afterAll`
-- `require-test-description` — enforce meaningful test names, no `'test 1'` or `'TODO'`
+- `require-test-description` — enforce meaningful test names
 - `no-console-in-tests` — flag `console.log` left in test files
-- SARIF output for GitHub Code Scanning native integration
+- SARIF output for GitHub Code Scanning
 - VS Code extension for inline rule highlighting
 
-Have a rule idea? [Open a rule request →](https://github.com/qa-ashutosh/assert-guard/issues/new?template=rule_request.md)
+[Open a rule request →](https://github.com/qa-ashutosh/assert-guard/issues/new?template=rule_request.md)
 
 <br />
 
@@ -593,17 +557,12 @@ Have a rule idea? [Open a rule request →](https://github.com/qa-ashutosh/asser
 
 ## Contributing
 
-Contributions are welcome — especially new rules.
-
 ```bash
 git clone https://github.com/qa-ashutosh/assert-guard.git
-cd assert-guard
-npm install
-npm run build
-npm test
+cd assert-guard && npm install && npm run build && npm test
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the step-by-step rule authoring guide and PR checklist.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the rule authoring guide and PR checklist.
 
 <br />
 
@@ -619,14 +578,20 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the step-by-step rule authoring guide
 
 <div align="center">
 
-**[npm](https://www.npmjs.com/package/@ashforge/assert-guard)** &nbsp;·&nbsp;
-**[GitHub](https://github.com/qa-ashutosh/assert-guard)** &nbsp;·&nbsp;
-**[Issues](https://github.com/qa-ashutosh/assert-guard/issues)** &nbsp;·&nbsp;
-**[Changelog](CHANGELOG.md)**
+<p>
+  <a href="https://www.npmjs.com/package/@ashforge/assert-guard"><strong>npm</strong></a> &nbsp;·&nbsp;
+  <a href="https://github.com/qa-ashutosh/assert-guard"><strong>GitHub</strong></a> &nbsp;·&nbsp;
+  <a href="https://github.com/qa-ashutosh/assert-guard/issues"><strong>Issues</strong></a> &nbsp;·&nbsp;
+  <a href="CHANGELOG.md"><strong>Changelog</strong></a>
+</p>
 
 <br />
 
-_Built by a QA architect. For engineers who treat test quality as a first-class concern._
+<p><em>Built by a QA architect. For engineers who treat test quality as a first-class concern.</em></p>
+
+<br />
+
+<p>If assert-guard caught a bug in your test suite, saved you a broken CI run,<br/>or just made your codebase a little cleaner —<br/><strong><a href="https://github.com/qa-ashutosh/assert-guard">a ★ on GitHub</a> means more than you think.</strong></p>
 
 <br />
 
