@@ -13,11 +13,11 @@ and architectural violations — before they silently break your pipeline.
 
 <br />
 
-[![npm](https://img.shields.io/npm/v/%40ashforge%2Fassert-guard?style=flat-square&color=0f0f0f&labelColor=0f0f0f&logo=npm&logoColor=white)](https://www.npmjs.com/package/@ashforge/assert-guard)
-[![CI](https://img.shields.io/github/actions/workflow/status/qa-ashutosh/assert-guard/ci.yml?style=flat-square&color=0f0f0f&labelColor=0f0f0f&label=CI)](https://github.com/qa-ashutosh/assert-guard/actions)
-[![License: MIT](https://img.shields.io/badge/license-MIT-0f0f0f?style=flat-square&labelColor=0f0f0f)](LICENSE)
-[![Node](https://img.shields.io/node/v/%40ashforge%2Fassert-guard?style=flat-square&color=0f0f0f&labelColor=0f0f0f)](https://nodejs.org)
-[![Coverage](https://img.shields.io/badge/rule_coverage-92%25-0f0f0f?style=flat-square&labelColor=0f0f0f)](https://github.com/qa-ashutosh/assert-guard)
+[![npm](https://img.shields.io/npm/v/%40ashforge%2Fassert-guard?style=flat-square&logo=npm)](https://www.npmjs.com/package/@ashforge/assert-guard)
+[![CI](https://img.shields.io/github/actions/workflow/status/qa-ashutosh/assert-guard/ci.yml?style=flat-square&label=CI)](https://github.com/qa-ashutosh/assert-guard/actions)
+[![License: MIT](https://img.shields.io/badge/license-MIT-yellow?style=flat-square)](LICENSE)
+[![Node](https://img.shields.io/node/v/%40ashforge%2Fassert-guard?style=flat-square)](https://nodejs.org)
+[![Coverage](https://img.shields.io/badge/rule_coverage-92%25-brightgreen?style=flat-square)](https://github.com/qa-ashutosh/assert-guard)
 
 <br />
 
