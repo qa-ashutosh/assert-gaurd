@@ -8,7 +8,7 @@
 
 <p>
 Lint your test suite for anti-patterns, flaky selectors, hard waits,<br/>
-and architectural violations — before they silently break your pipeline.
+and architectural violations before they silently break your pipeline.
 </p>
 
 <br />
@@ -66,7 +66,7 @@ assert-guard catches it at the gate.
   *.cy.ts               runner needed      pluggable         HTML
 ```
 
-assert-guard parses your test files as an Abstract Syntax Tree — the same technique ESLint uses. No test runner required. No Cypress. No Playwright. Just your files and a set of rules that encode what a senior QA architect would flag in a code review.
+assert-guard parses your test files as an Abstract Syntax Tree, the same technique ESLint uses. No test runner required. No Cypress. No Playwright. Just your files and a set of rules that encode what a senior QA architect would flag in a code review.
 
 **Scans 40+ files in under 2 seconds.**
 
@@ -105,6 +105,20 @@ assert-guard parses your test files as an Abstract Syntax Tree — the same tech
 
 ---
 
+## HTML Report
+
+Run `assert-guard --format html` to get a self-contained report you can open in any browser or attach to a CI artifact.
+
+<p align="center">
+  <img src="assert-gaurd_screenshot.png" alt="assert-guard HTML report showing 7 single-assertion-focus warnings across 5 scanned files, quality gate passed" width="900" />
+</p>
+
+> The report shows every violation with its file, line number, severity badge, and a plain-English fix hint. No internet connection needed; the file is fully self-contained.
+
+<br />
+
+---
+
 ## Built-in Rules
 
 <br />
@@ -121,9 +135,9 @@ assert-guard parses your test files as an Abstract Syntax Tree — the same tech
 
 <br />
 
-> **error** → blocks merge · exits with code `1`  
-> **warn** → advisory · visible in report  
-> **info** → informational · never fails the gate
+> **error** blocks merge and exits with code `1`
+> **warn** is advisory and visible in the report
+> **info** is informational and never fails the gate
 
 <br />
 
@@ -250,11 +264,11 @@ Lists all available built-in rules with their default severity.
 
 Every rule accepts: `"error"` · `"warn"` · `"info"` · `"off"`
 
-Config is auto-discovered in this order: `ag.config.json` → `.assert-guard.json` → `assert-guard.config.json`
+Config is auto-discovered in this order: `ag.config.json` then `.assert-guard.json` then `assert-guard.config.json`
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `rules` | object | see defaults | Rule name → severity level |
+| `rules` | object | see defaults | Rule name to severity level |
 | `include` | string[] | `["**/*.spec.*", "**/*.test.*", "**/*.cy.*"]` | Glob patterns to scan |
 | `exclude` | string[] | `["**/node_modules/**", "**/dist/**"]` | Glob patterns to ignore |
 | `maxAssertionsPerTest` | number | `5` | Threshold for `single-assertion-focus` |
@@ -469,7 +483,7 @@ assert-guard --dir ./tests --format json
   run: npx @ashforge/assert-guard --dir ./tests
 ```
 
-assert-guard exits `1` on errors — every CI system treats non-zero exit codes as a build failure automatically.
+assert-guard exits `1` on errors, and every CI system treats non-zero exit codes as a build failure automatically.
 
 **Full workflow with report artifact:**
 
@@ -525,7 +539,7 @@ if (result.gateStatus === 'failed') {
 
 ## Framework Support
 
-Framework-agnostic — no test runner installation required.
+Framework-agnostic, no test runner installation required.
 
 | Framework | Detected patterns |
 |-----------|-------------------|
